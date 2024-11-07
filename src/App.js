@@ -1,11 +1,8 @@
-
 import './App.css';
-
+import Rout from './Routes/Rout';
 function App() {
   return (
-    <div className="App">
-      E - Commerce App
-    </div>
+    <Rout />
   );
 }
 
