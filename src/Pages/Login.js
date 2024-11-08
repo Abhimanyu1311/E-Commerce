@@ -2,10 +2,12 @@
 import React from 'react'
 import { Field, Form, Formik } from 'formik'
 import * as Yup from 'yup';
+import { useNavigate } from 'react-router';
 import Btn from '../Components/Btn';
 import axios from 'axios';
 
 export default function Login() {
+    const navigate = useNavigate();
     const validationSchema = Yup.object().shape({
         email: Yup.string().required('Required'),
         password: Yup.string().required("Required")
@@ -18,9 +20,9 @@ export default function Login() {
                 password: values.password
             });
             const data = response.data;
-            console.log(data);
             if (data.token) {
                 localStorage.setItem('token', data.token);
+                navigate("/")                
             }
             resetForm();
         } catch (error) {
@@ -32,8 +34,7 @@ export default function Login() {
         <>
             <div className="w-screen h-screen flex justify-center items-center">
                 <div className="bg-green-300 px-12 py-4 shadow-2xl rounded-2xl justify-center border-4 max-w-[1000px]">
-                    <div className='font-bold text-3xl mt-2 mb-4'>
-                        
+                    <div className='font-bold text-3xl mt-2 mb-4'>                       
                         Login
                     </div>
                     <Formik
@@ -60,7 +61,6 @@ export default function Login() {
                                     type="password"
                                     onChange={handleChange} />
                                 {errors.password && <span className="text-red-600 text-sm">{errors.password}</span>}
-
                                 <div>
                                     <Btn buttonName={"Login"} />
                                 </div>
