@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import Navbar from '../Components/Navbar'
 import axios from 'axios'
+import Navbar from '../../Components/Navbar'
 
-function Home() {
-  const [products, setProducts] = useState([])
+function Electronics() {
+  const [items, setItems] = useState([])
   const [isLoading, setIsLoading] = useState(false)
 
-  const fetchProducts = async () => {
+  const fetchItems = async () => {
     try {
       setIsLoading(true)
-      const response = await axios.get('https://fakestoreapi.com/products');
-      const products = response.data;
-      setProducts(products)
+      const response = await axios.get('https://fakestoreapi.com/products/category/electronics');
+      const items = response.data;
+      setItems(items)
     }
     catch (error) {
       console.log("Error", error)
@@ -21,38 +21,15 @@ function Home() {
     }
   }
   useEffect(() => {
-    fetchProducts()
+    fetchItems()
   }, [])
-
-  // const addToCart = ((id,name,price) =>{
-  //   const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  //       const product = cart.find(item => item.id === id);
-  //       if (product) {
-  //           product.quantity += 1;
-  //       } else {
-  //           cart.push({ id, name, price, quantity: 1 });
-  //       }
-  //       localStorage.setItem('cart', JSON.stringify(cart));
-  //       console.log(cart);
-  //     }
-  //   )
-
-
   return (
     <>
       <Navbar />
-      <div className='h-24 mt-2 justify-center items-center bg-headlineColor text-3xl py-4 font-sans'>
-        <h1 className='text-headlineTextColor text-center font-semibold'>
-          Welcome to an E-Commerce website
+      <div className='md:h-24 lg:h-20 mt-2 justify-center items-center bg-headlineColor text-3xl py-4 font-sans'>
+        <h1 className='text-headlineTextColor font-semibold text-center'>
+          Electronics Items Available in the Store
         </h1>
-      </div>
-      <div className='text-orange-500 bg-blue-300 mt-4 justify-center text-center h-20 items-center py-2 font-sans'>
-        <p className='text-3xl font-bold'>
-          Welcome to our store
-        </p>
-        <p className='text-xl font-semibold'>
-          Find the best products here
-        </p>
       </div>
 
       <div className='mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-4 p-4'>
@@ -60,7 +37,7 @@ function Home() {
           <div role="status" className="fixed inset-0 flex justify-center items-center">
             <svg
               aria-hidden="true"
-              className="w-28 h-28 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+              className="w-60 h-60 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
               viewBox="0 0 100 101"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -78,13 +55,13 @@ function Home() {
           </div>
           :
           <>
-            {products.map((product) => (
-              <div key={product.id} className='bg-white p-4 shadow-xl'>
-                <img src={product.image} alt={product.title} className='h-80 w-full cursor-pointer border-2 mb-4' />
-                <h2 className='text-lg cursor-pointer font-semibold'>{product.title}</h2>
-                <p className='text-gray-700 text-sm'>{product.description.substring(0, 100)}...</p>
+            {items.map((item) => (
+              <div key={item.id} className='bg-white p-4 shadow-xl'>
+                <img src={item.image} alt={item.title} className='h-80 w-full cursor-pointer border-2 mb-4' />
+                <h2 className='text-lg cursor-pointer font-semibold'>{item.title}</h2>
+                <p className='text-gray-700 text-sm'>{item.description.substring(0, 100)}...</p>
                 <p className='mt-2 text-lg font-bold text-blue-400 justify-between flex'>
-                  ${product.price}
+                  ${item.price}
                   <button className='border-2 text-black font-medium bg-green-300 hover:bg-yellow-300 rounded-lg hover:text-white px-2 p-1 h-10'>
                     Add to Cart 🛒
                   </button>
@@ -96,7 +73,8 @@ function Home() {
       </div>
 
     </>
+
   )
 }
 
-export default Home
+export default Electronics;

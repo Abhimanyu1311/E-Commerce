@@ -3,8 +3,9 @@ import Navbar from '../Components/Navbar'
 
 function Cart() {
   return (
+    <>
     <Navbar />
-    
+    </> 
   )
 }
 
