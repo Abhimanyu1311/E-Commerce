@@ -5,7 +5,7 @@ module.exports = {
     extend: {
       colors:{
         navbarColor: "#0f1111",
-        headlineColor: "#deb887",
+        headlineColor: "rgb(14 162 152)",
         headlineTextColor: "#555"
       }
     },
