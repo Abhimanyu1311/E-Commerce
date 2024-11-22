@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import Navbar from '../../Components/Navbar'
+import addToCart from '../../Components/addToCart'
 
 function MensClothing() {
     const [items, setItems] = useState([])
@@ -26,8 +27,8 @@ function MensClothing() {
     return (
         <>
             <Navbar />
-            <div className=' md:h-24 lg:h-20 mt-2 justify-center items-center bg-headlineColor text-3xl py-4 font-sans'>
-                <h1 className='text-headlineTextColor font-semibold text-center'>
+            <div className=' md:h-24 lg:h-20 mt-2 justify-center items-center bg-headlineColor text-2xl py-4 font-sans'>
+                <h1 className='text-white font-semibold text-center px-2'>
                     Men's Clothes Items Available in the Store
                 </h1>
             </div>
@@ -37,7 +38,7 @@ function MensClothing() {
                     <div role="status" className="fixed inset-0 flex justify-center items-center">
                         <svg
                             aria-hidden="true"
-                            className="w-60 h-60 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                            className="w-28 h-28 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
                             viewBox="0 0 100 101"
                             fill="none"
                             xmlns="http://www.w3.org/2000/svg"
@@ -56,14 +57,15 @@ function MensClothing() {
                     :
                     <>
                         {items.map((item) => (
-                            <div key={item.id} className='bg-white p-4 shadow-xl'>
-                                <img src={item.image} alt={item.title} className='h-80 w-full cursor-pointer border-2 mb-4' />
-                                <h2 className='text-lg cursor-pointer font-semibold'>{item.title}</h2>
-                                <p className='text-gray-700 text-sm'>{item.description.substring(0, 100)}...</p>
+                            <div key={item.id} className='bg-white p-4 rounded-3xl border-2 shadow-xl'>
+                                <img src={item.image} alt={item.title} className='h-80 w-full p-4 rounded-xl cursor-pointer border-2 mb-4' />
+                                <h2 className='text-lg cursor-pointer line-clamp-1 font-semibold'>{item.title}</h2>
+                                <p className='text-gray-700 text-sm line-clamp-2'>{item.description}...</p>
                                 <p className='mt-2 text-lg font-bold text-blue-400 justify-between flex'>
                                     ${item.price}
-                                    <button className='border-2 text-black font-medium bg-green-300 hover:bg-yellow-300 rounded-lg hover:text-white px-2 p-1 h-10'>
-                                        Add to Cart 🛒
+                                    <button onClick={() => addToCart(item.id, item.image, item.title, item.price)}
+                                        className='font-mono border-2 text-white font-medium bg-blue-400 hover:bg-opacity-40 rounded-lg hover:text-white px-2 p-1 h-10'>
+                                        Add to Cart
                                     </button>
                                 </p>
                             </div>
