@@ -6,7 +6,6 @@ import Btn from '../Components/Btn';
 
 export default function Login() {
     const navigate = useNavigate();
-    const [isSubmitting, setIsSubmitting] = useState(true)
     const [isLoading, setIsLoading] = useState(false)
     const validationSchema = Yup.object().shape({
         username: Yup.string().required('Required'),
@@ -15,7 +14,6 @@ export default function Login() {
     const handleLogin = async (values, { resetForm }) => {
         try {
             setIsLoading(true)
-            setIsSubmitting(true)
             const response = await fetch("https://dummyjson.com/auth/login", {
                 method: "POST",
                 headers: {
@@ -38,7 +36,6 @@ export default function Login() {
             console.error("Error:", error);
         } finally {
             setIsLoading(false)
-            setIsSubmitting(false)
         }
     };
 
@@ -51,7 +48,6 @@ export default function Login() {
 
     return (
         <>
-            {isSubmitting ?
                 <div className="w-screen h-screen flex justify-center items-center">
                     <div className="bg-green-300 px-12 py-4 shadow-2xl rounded-2xl justify-center border-4 max-w-[1000px]">
                         <div className='font-bold text-3xl mt-2 mb-4'>Login</div>
@@ -103,9 +99,6 @@ export default function Login() {
                         </Formik>
                     </div>
                 </div>
-                :
-                <div>HIIIIIIII</div>
-            }
         </>
     );
 }

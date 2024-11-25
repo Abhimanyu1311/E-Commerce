@@ -7,7 +7,6 @@ const addToCart = (id, image, name, price,quantity) => {
       cart.push({ id, name, image, price, quantity: 1 });
     }
     localStorage.setItem('cart', JSON.stringify(cart));
-    console.log(cart);
   };
 
 export default addToCart;
