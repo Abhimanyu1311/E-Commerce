@@ -33,12 +33,9 @@ export default function Login() {
                 localStorage.setItem("accessToken", data.accessToken);
                 resetForm();
                 navigate("/");
-            } else {
-                console.log("ERorororoorororoor");
-            }
+            } 
         } catch (error) {
             console.error("Error:", error);
-
         } finally {
             setIsLoading(false)
         }
