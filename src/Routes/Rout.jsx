@@ -14,13 +14,14 @@ import AddressPage from "../Pages/AddressPage";
 import Payments from "../Pages/Payments";
 import PaymentSuccess from "../Pages/PaymentSuccess";
 import Logout from "../Pages/Logout";
+import Profile from "../Pages/Profile";
 
 const Rout = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/login" element={<Login />} />
-
+                <Route path="/login" element={<Login />}></Route>
+                <Route path="/profile" element={<PrivateRoute Component={Profile} />} />
                 <Route path="/electronics" element={<PrivateRoute Component={Electronics} />}/>
                 <Route path="/jewellery" element={<PrivateRoute Component={Jewellery} />}/>
                 <Route path="/men'sclothing" element={<PrivateRoute Component={MensClothing} />}/>
@@ -29,7 +30,6 @@ const Rout = () => {
                 <Route path="/payments" element={<PrivateRoute Component={Payments} />}/>
                 <Route path="/logout" element={<PrivateRoute Component={Logout} />}/>
                 <Route path="/payments-success" element={<PrivateRoute Component={PaymentSuccess} />}/>
-
                 <Route path="/" index element={<PrivateRoute Component={Home} />} />
                 <Route path="/about" element={<PrivateRoute Component={About} />} />
                 <Route path="/categories" element={<PrivateRoute Component={Categories} />} />

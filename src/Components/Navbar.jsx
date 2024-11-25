@@ -4,13 +4,18 @@ import Categories from '../Pages/Categories';
 
 function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isSearchBarOpen, setIsSearchBarOpen] = useState(false)
     const [cartItems, setCartItems] = useState([]);
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
-    const handleTotal =  () => {
+    const toggleSearchButton = () => {
+        setIsSearchBarOpen(!isSearchBarOpen)
+    }
+
+    const handleTotal = () => {
         try {
             const cartItems = JSON.parse(localStorage.getItem('cart')) || []
             setCartItems(cartItems)
@@ -29,9 +34,10 @@ function Navbar() {
                 <Link to="/">
                     <div className="flex items-center space-x-4">
                         <img className="h-8" src="logo.png" alt="Logo" />
-                        <h1 className="text-xl">E-Commerce</h1>
+                        <h1 className="text-lg">E-Commerce</h1>
                     </div>
                 </Link>
+
                 <div className="hidden md:flex items-center space-x-6">
                     <Link to="/" className="hover:border px-4 py-2 rounded-lg border-slate-300">Home</Link>
                     <Link to="/about" className="hover:border px-4 py-2 rounded-lg border-slate-300">About</Link>
@@ -47,13 +53,22 @@ function Navbar() {
                         </svg>
                         <p>{totalAmount}</p>
                     </Link>
-                    <Link to="/login" className="hover:border px-4 py-2 rounded-lg border-slate-300">
+                    <Link to="/profile" className="hover:border px-4 py-2 rounded-lg border-slate-300">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         </svg>
                     </Link>
-                    <Link to="/logout" className="hover:border px-4 py-2 rounded-lg border-slate-300">Logout</Link>
                 </div>
+
+                <div className="md:hidden flex items-center px-4 py-2 hover:border border-slate-300 rounded-lg">
+                    <button onClick={toggleSearchButton} className="focus:outline-none">
+                        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <path d="M18.9999 19L14.6499 14.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                </div>
+
                 <div className="md:hidden flex items-center px-4 py-2 hover:border border-slate-300 rounded-lg">
                     <button onClick={toggleMobileMenu} className="focus:outline-none">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -62,6 +77,7 @@ function Navbar() {
                     </button>
                 </div>
             </nav>
+
 
             {isMobileMenuOpen && (
                 <div className="md:hidden bg-navbarColor flex flex-col text-gray-300 space-y-4 p-4">
@@ -76,8 +92,7 @@ function Navbar() {
                     <Link to="/cart" className="hover:border px-4 py-2 rounded-lg border-slate-300">
                         Cart({cartItems.reduce((total, item) => total + item.quantity, 0)})
                     </Link>
-                    <Link to="/login" className="hover:border px-4 py-2 rounded-lg border-slate-300">Login</Link>
-                    <Link to="/logout" className="hover:border px-4 py-2 rounded-lg border-slate-300">Logout</Link>
+                    <Link to="/profile" className="hover:border px-4 py-2 rounded-lg border-slate-300">Profile</Link>
                 </div>
             )}
         </>

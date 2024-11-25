@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from '../Components/Navbar'
 import axios from 'axios'
+import { debounce } from 'lodash'
 import addToCart from "../Components/addToCart"
 
 function Home() {
   const [products, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const [search, setSearch] = useState('')
 
   const fetchProducts = async () => {
     try {
@@ -21,6 +23,13 @@ function Home() {
       setIsLoading(false)
     }
   }
+  const handleSearch = debounce((e) => {
+    const searchProduct = e.target.value;
+    setSearch(searchProduct)
+  }, 2000)
+  const filteredProducts = products.filter((product) =>
+    product.title.includes(search)
+  )
 
   useEffect(() => {
     fetchProducts()
@@ -41,6 +50,15 @@ function Home() {
         <p className='text-xl font-semibold'>
           Find the best products here
         </p>
+        <div class="w-1/3 relative flex justify-center items-center  ">
+          <input className="input h-10 text-black w-full rounded-xl px-2 " onChange={handleSearch} type="text" placeholder="Search Here..." />
+          <button className="absolute top-1/2 right-2 translate-y-[-50%] hover:text-theme">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M18.9999 19L14.6499 14.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+          </button>
+        </div>
       </div>
 
       <div className='mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5  gap-4 p-4'>
@@ -66,7 +84,7 @@ function Home() {
           </div>
           :
           <>
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <div key={product.id} className='bg-white p-4 rounded-3xl border-2 shadow-xl'>
                 <img src={product.image} alt={product.title} className='rounded-xl p-4 border-gray-300 2xl: h-80 w-full cursor-pointer border-2 mb-4' />
                 <h2 className='text-lg cursor-pointer  line-clamp-1 font-semibold'>{product.title}...</h2>
@@ -76,7 +94,7 @@ function Home() {
                   <button onClick={() => addToCart(product.id, product.image, product.title, product.price)}
                     className='font-mono border-2 text-white font-medium bg-blue-400 hover:bg-opacity-40 rounded-lg hover:text-white px-2 p-1 h-10'>
                     Add to Cart
-                  </button> 
+                  </button>
                 </p>
               </div>
             ))}
