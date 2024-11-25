@@ -8,6 +8,17 @@ function Home() {
   const [products, setProducts] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [search, setSearch] = useState('')
+  const [categories, setCategories] = useState([])
+
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get("https://fakestoreapi.com/products/categories")
+      const categories = await res.data;
+      setCategories(categories)
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const fetchProducts = async () => {
     try {
@@ -26,39 +37,46 @@ function Home() {
   const handleSearch = debounce((e) => {
     const searchProduct = e.target.value;
     setSearch(searchProduct)
-  }, 2000)
+  }, 1000)
   const filteredProducts = products.filter((product) =>
     product.title.includes(search)
   )
 
   useEffect(() => {
-    fetchProducts()
+    fetchProducts();
+    fetchCategories();
   }, [])
 
   return (
     <>
       <Navbar />
-      <div className='h-20 mt-2 justify-center items-center bg-headlineColor text-3xl  font-sans'>
-        <h1 className='text-white items-center md:py-4 text-center font-semibold'>
-          Welcome to an E-Commerce website
-        </h1>
+
+      <div className="w-full relative flex justify-start ms-4 items-center mt-2 h-12   ">
+        <input className="input h-10 text-black w-1/3 border-2 rounded-xl px-2 " onChange={handleSearch} type="text" placeholder="Search Here..." />
+        <button className='border-2 px-2  ms-2 bg-gray-100 '>
+          Filter
+        </button>
       </div>
+      {
+        categories.map((category) => (
+          <div className='inline-flex w-full'>
+            <div className='mt-4 inline-flex grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5  gap-4 p-4'>
+              <div key={category} className='bg-white p-4 rounded-3xl border-2 shadow-xl '>
+                {category}
+              </div>
+            </div>
+          </div>
+        ))
+      }
+
       <div className='text-white bg-blue-600 mt-4 justify-center text-center h-20 items-center py-2 font-sans'>
         <p className='text-3xl font-bold'>
           Welcome to our store
         </p>
+
         <p className='text-xl font-semibold'>
           Find the best products here
         </p>
-        <div class="w-1/3 relative flex justify-center items-center  ">
-          <input className="input h-10 text-black w-full rounded-xl px-2 " onChange={handleSearch} type="text" placeholder="Search Here..." />
-          <button className="absolute top-1/2 right-2 translate-y-[-50%] hover:text-theme">
-            <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M18.9999 19L14.6499 14.65" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-          </button>
-        </div>
       </div>
 
       <div className='mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5  gap-4 p-4'>

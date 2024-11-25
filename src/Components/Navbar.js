@@ -78,7 +78,6 @@ function Navbar() {
                 </div>
             </nav>
 
-
             {isMobileMenuOpen && (
                 <div className="md:hidden bg-navbarColor flex flex-col text-gray-300 space-y-4 p-4">
                     <Link to="/" className="hover:border px-4 py-2 rounded-lg border-slate-300">Home</Link>
