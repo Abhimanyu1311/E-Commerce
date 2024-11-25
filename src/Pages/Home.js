@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Navbar from '../Components/Navbar'
 import axios from 'axios'
+import addToCart from "../Components/addToCart"
 
 function Home() {
   const [products, setProducts] = useState([])
@@ -20,33 +21,20 @@ function Home() {
       setIsLoading(false)
     }
   }
+
   useEffect(() => {
     fetchProducts()
   }, [])
 
-  // const addToCart = ((id,name,price) =>{
-  //   const cart = JSON.parse(localStorage.getItem('cart')) || [];
-  //       const product = cart.find(item => item.id === id);
-  //       if (product) {
-  //           product.quantity += 1;
-  //       } else {
-  //           cart.push({ id, name, price, quantity: 1 });
-  //       }
-  //       localStorage.setItem('cart', JSON.stringify(cart));
-  //       console.log(cart);
-  //     }
-  //   )
-
-
   return (
     <>
       <Navbar />
-      <div className='h-24 mt-2 justify-center items-center bg-headlineColor text-3xl py-4 font-sans'>
-        <h1 className='text-headlineTextColor text-center font-semibold'>
+      <div className='h-20 mt-2 justify-center items-center bg-headlineColor text-3xl  font-sans'>
+        <h1 className='text-white items-center md:py-4 text-center font-semibold'>
           Welcome to an E-Commerce website
         </h1>
       </div>
-      <div className='text-orange-500 bg-blue-300 mt-4 justify-center text-center h-20 items-center py-2 font-sans'>
+      <div className='text-white bg-blue-600 mt-4 justify-center text-center h-20 items-center py-2 font-sans'>
         <p className='text-3xl font-bold'>
           Welcome to our store
         </p>
@@ -55,7 +43,7 @@ function Home() {
         </p>
       </div>
 
-      <div className='mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-4 p-4'>
+      <div className='mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5  gap-4 p-4'>
         {isLoading ?
           <div role="status" className="fixed inset-0 flex justify-center items-center">
             <svg
@@ -79,15 +67,16 @@ function Home() {
           :
           <>
             {products.map((product) => (
-              <div key={product.id} className='bg-white p-4 shadow-xl'>
-                <img src={product.image} alt={product.title} className='h-80 w-full cursor-pointer border-2 mb-4' />
-                <h2 className='text-lg cursor-pointer font-semibold'>{product.title}</h2>
-                <p className='text-gray-700 text-sm'>{product.description.substring(0, 100)}...</p>
+              <div key={product.id} className='bg-white p-4 rounded-3xl border-2 shadow-xl'>
+                <img src={product.image} alt={product.title} className='rounded-xl p-4 border-gray-300 2xl: h-80 w-full cursor-pointer border-2 mb-4' />
+                <h2 className='text-lg cursor-pointer  line-clamp-1 font-semibold'>{product.title}...</h2>
+                <p className='text-gray-700 text-sm line-clamp-2'>{product.description}...</p>
                 <p className='mt-2 text-lg font-bold text-blue-400 justify-between flex'>
                   ${product.price}
-                  <button className='border-2 text-black font-medium bg-green-300 hover:bg-yellow-300 rounded-lg hover:text-white px-2 p-1 h-10'>
-                    Add to Cart 🛒
-                  </button>
+                  <button onClick={() => addToCart(product.id, product.image, product.title, product.price)}
+                    className='font-mono border-2 text-white font-medium bg-blue-400 hover:bg-opacity-40 rounded-lg hover:text-white px-2 p-1 h-10'>
+                    Add to Cart
+                  </button> 
                 </p>
               </div>
             ))}
