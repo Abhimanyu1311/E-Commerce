@@ -10,7 +10,7 @@ function About() {
           About Page
         </div>
         <div className='flex h-screen w-screen mt-2 justify-center h-200'>
-          <img src="1.png" alt=""  />
+          <img src="1.png" alt="" />
         </div>
       </div>
     </>

@@ -1,43 +1,108 @@
-import React, { useState, useEffect } from 'react'
-import Navbar from '../Components/Navbar'
-import axios from 'axios'
-import addToCart from "../Components/addToCart"
+import React, { useState, useEffect } from 'react';
+import Navbar from '../Components/Navbar';
+import axios from 'axios';
+import { debounce } from 'lodash';
+import addToCart from "../Components/addToCart";
 
 function Home() {
-  const [products, setProducts] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [search, setSearch] = useState('');
+  const [catName, setCatName] = useState("");
 
-  const fetchProducts = async () => {
+  const applySorting = (order) => {
     try {
       setIsLoading(true)
-      const response = await axios.get('https://fakestoreapi.com/products');
-      const products = response.data;
-      setProducts(products)
-    }
-    catch (error) {
-      console.log("Error", error)
-    }
-    finally {
+      const sorted = [...products].sort((a, b) => {
+        return order === 'lowToHigh' ? a.price - b.price : b.price - a.price;
+      });
+      setProducts(sorted);
+    } catch (error) {
+      console.error(error);
+    } finally {
       setIsLoading(false)
     }
-  }
+  };
+
+  const fetchProducts = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.get('https://fakestoreapi.com/products');
+      setProducts(response.data);
+    } catch (error) {
+      console.error("Error", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSearch = debounce((e) => {
+    setSearch(e.target.value);
+  }, 1000);
 
   useEffect(() => {
-    fetchProducts()
-  }, [])
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    if (catName) {
+      const renderByCategories = async () => {
+        try {
+          setIsLoading(true)
+          const res = await axios.get(`https://fakestoreapi.com/products/category/${catName}`);
+          setProducts(res.data);
+        } catch (error) {
+          console.error(error);
+        }
+        finally {
+          setIsLoading(false)
+        }
+      };
+      renderByCategories();
+    }
+  }, [catName]);
+
+  const filteredProducts = products.filter(product =>
+    product.title.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <>
       <Navbar />
-      <div className='h-20 mt-2 justify-center items-center bg-headlineColor text-3xl  font-sans'>
-        <h1 className='text-white items-center md:py-4 text-center font-semibold'>
-          Welcome to an E-Commerce website
-        </h1>
+      <div className="w-full relative flex flex-wrap justify-between  items-center my-4 h-auto gap-4">
+        <input
+          className="input h-10 text-black sm:w-full md:2/3 ms-10 xl:w-1/3  justify-center  border-2 rounded-xl px-2"
+          onChange={handleSearch}
+          type="text"
+          placeholder="Search Here..."
+        />
+        <div className="grid grid-cols-2 justify-center gap-4 mx-10">
+          <button
+            className="border-2 rounded-xl px-4 py-2 hover:bg-slate-300 shadow-xl"
+            onClick={() => applySorting('lowToHigh')}
+          >
+            Price : Low to High
+          </button>
+          <button
+            className="border-2 rounded-xl px-4 py-2 hover:bg-slate-300 shadow-xl"
+            onClick={() => applySorting('highToLow')}
+          >
+            Price : High to Low
+          </button>
+        </div>
+        <div className='grid mx-4 lg:grid-cols-4 gap-4 sm:grid-cols-2'>
+          <img onClick={()=>setCatName('electronics')}  className='h-60 rounded-2xl shadow-xl  cursor-pointer w-100' 
+          src='./Electronics.jpeg' alt='Electronics' />
+          <img onClick={()=>setCatName('jewelery')} className='rounded-2xl shadow-xl h-60 cursor-pointer w-100' src="https://cdn0.weddingwire.in/vendor/9497/3_2/960/png/bridal-jewellery-suvarnakala-jewellers-necklace-earrings-2_15_319497-159369268555056.jpeg" alt='jewelery' />
+          <img onClick={()=>setCatName("men's clothing")} className='rounded-2xl shadow-xl h-60 w-100 cursor-pointer' src='https://media.istockphoto.com/id/1293366109/photo/this-one-match-perfect-with-me.jpg?s=612x612&w=0&k=20&c=wJ6yYbRrDfdmoViuQkX39s2z_0lCiNQYgEtLU--0EbY=' alt="Men's Clothes" />
+          <img onClick={()=>setCatName("women's clothing")} className='rounded-2xl shadow-xl h-60 w-80 cursor-pointer' src="./Women's Clothings.jpeg" alt="Women's Clothes" />
+        </div>
       </div>
       <div className='text-white bg-blue-600 mt-4 justify-center text-center h-20 items-center py-2 font-sans'>
         <p className='text-3xl font-bold'>
           Welcome to our store
         </p>
+
         <p className='text-xl font-semibold'>
           Find the best products here
         </p>
@@ -66,7 +131,7 @@ function Home() {
           </div>
           :
           <>
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <div key={product.id} className='bg-white p-4 rounded-3xl border-2 shadow-xl'>
                 <img src={product.image} alt={product.title} className='rounded-xl p-4 border-gray-300 2xl: h-80 w-full cursor-pointer border-2 mb-4' />
                 <h2 className='text-lg cursor-pointer  line-clamp-1 font-semibold'>{product.title}...</h2>
@@ -76,7 +141,7 @@ function Home() {
                   <button onClick={() => addToCart(product.id, product.image, product.title, product.price)}
                     className='font-mono border-2 text-white font-medium bg-blue-400 hover:bg-opacity-40 rounded-lg hover:text-white px-2 p-1 h-10'>
                     Add to Cart
-                  </button> 
+                  </button>
                 </p>
               </div>
             ))}
