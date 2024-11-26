@@ -71,7 +71,7 @@ function Home() {
       <Navbar />
       <div className="w-full relative flex flex-wrap justify-between  items-center my-4 h-auto gap-4">
         <input
-          className="input h-10 text-black sm:w-full md:2/3 ms-10 xl:w-1/3  justify-center  border-2 rounded-xl px-2"
+          className="input h-10 text-black sm:w-1/3 lg:w-1/3 md:1/3 ms-10 xl:w-1/3  justify-center  border-2 rounded-xl px-2"
           onChange={handleSearch}
           type="text"
           placeholder="Search Here..."
@@ -110,7 +110,7 @@ function Home() {
 
       <div className='mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5  gap-4 p-4'>
         {isLoading ?
-          <div role="status" className="fixed inset-0 flex justify-center items-center">
+          <div role="status" className=" inset-0 flex justify-center items-center">
             <svg
               aria-hidden="true"
               className="w-28 h-28 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"

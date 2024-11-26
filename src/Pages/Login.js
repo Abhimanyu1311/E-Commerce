@@ -34,6 +34,9 @@ export default function Login() {
                 resetForm();
                 navigate("/");
             } 
+            else{
+                alert('Password is incorrect for this email!');
+            }
         } catch (error) {
             console.error("Error:", error);
         } finally {
