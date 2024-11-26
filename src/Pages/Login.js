@@ -13,7 +13,7 @@ export default function Login() {
         password: Yup.string().required("Required")
     });
 
-    const handleLogin = async (values, { resetForm },onSubmitProps) => {
+    const handleLogin = async (values, { resetForm }, onSubmitProps) => {
         try {
             setIsLoading(true)
             const response = await fetch("https://dummyjson.com/auth/login", {
@@ -28,14 +28,14 @@ export default function Login() {
             });
 
             const data = await response.json();
-           
+
             if (data.accessToken) {
                 localStorage.setItem("accessToken", data.accessToken);
                 resetForm();
                 navigate("/");
-            } 
+            }
             else{
-                alert('Password is incorrect for this email!');
+                alert("Abey Yaaar!! Dekh kr password daal")
             }
         } catch (error) {
             console.error("Error:", error);

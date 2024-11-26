@@ -58,13 +58,15 @@ function Electronics() {
           <>
             {items.map((item) => (
               <div key={item.id} className='bg-white p-4 rounded-3xl border-2 shadow-xl'>
-                <img src={item.image} alt={item.title} className='h-80 w-full p-4 rounded-xl cursor-pointer border-2 mb-4' />
-                <h2 className='text-lg cursor-pointer line-clamp-1 font-semibold'>{item.title}</h2>
-                <p className='text-gray-700 text-sm line-clamp-2'>{item.description}...</p>
-                <p className='mt-2 text-lg font-bold text-blue-400 justify-between flex'>
+                <div className='justify-center flex items-center'>
+                <img src={item.image} alt={item.title} className='rounded-xl p-4 border-gray-300 2xl: h-60 w-60  cursor-pointer border-2 mb-4' />
+                </div>
+                <h2 className='text-[16px] cursor-pointer  line-clamp-1 font-semibold'>{item.title}...</h2>
+                <p className='text-gray-700 text-[12px] line-clamp-2'>{item.description}...</p>
+                <p className='mt-2 text-[16px] font-bold text-blue-400 justify-between flex'>
                   ${item.price}
                   <button onClick={() => addToCart(item.id, item.image, item.title, item.price)}
-                    className='font-mono border-2 text-white font-medium bg-blue-400 hover:bg-opacity-40 rounded-lg hover:text-white px-2 p-1 h-10'>
+                    className='font-mono border-2 text-white font-medium bg-blue-400 hover:bg-opacity-40 rounded-lg hover:text-white items-center px-2  h-8'>
                     Add to Cart
                   </button>
                 </p>
