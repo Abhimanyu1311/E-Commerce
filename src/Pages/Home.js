@@ -73,14 +73,14 @@ function Home() {
   return (
     <>
       <Navbar />
-      <div className="w-full relative flex flex-wrap justify-between items-center my-4 h-auto gap-4">
+      <div className=" w-full relative flex flex-wrap justify-between items-center my-4 h-auto gap-4">
         <input
-          className="input h-10 text-black w-full sm:w-full lg:w-1/3 border-2 rounded-xl px-2"
+          className="input h-10 text-black w-full ms-4 sm:w-full lg:w-1/3 border-2 rounded-xl px-2"
           onChange={handleSearch}
           type="text"
           placeholder="Search Here..."
         />
-        <div className="flex flex-col sm:flex-row justify-center gap-4 w-full sm:w-auto px-4 sm:px-0">
+        <div className="flex flex-col me-4 sm:flex-row justify-center gap-4 w-full sm:w-auto px-4 sm:px-0">
           <button
             className="border-2 rounded-xl px-4 py-2 focus:bg-blue-500 focus:text-white hover:bg-slate-300 shadow-xl"
             onClick={() => applySorting('lowToHigh')}
