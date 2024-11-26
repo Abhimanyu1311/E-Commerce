@@ -34,9 +34,6 @@ export default function Login() {
                 resetForm();
                 navigate("/");
             }
-            else{
-                alert("Abey Yaaar!! Dekh kr password daal")
-            }
         } catch (error) {
             console.error("Error:", error);
         } finally {

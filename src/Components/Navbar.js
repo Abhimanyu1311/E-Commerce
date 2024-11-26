@@ -5,12 +5,11 @@ import { ProfileMenu } from './ProfileMenu';
 
 function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    
+    const [cartCount, setCartCount] = useState('');    
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
-    const [cartCount, setCartCount] = useState(0);
     const handleTotal = () => {
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         const totalAmount = cart.reduce((sum, item) => sum + item.quantity, 0);
