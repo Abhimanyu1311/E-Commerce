@@ -14,42 +14,54 @@ function Cart() {
       cartItem.quantity += 1;
     }
     localStorage.setItem('cart', JSON.stringify(cart));
+    window.dispatchEvent(new Event('cartUpdated')); 
     displayCart();
   }
 
   const decreaseQuantity = async (id) => {
-    const cart = await JSON.parse(localStorage.getItem('cart'));
-    const cartItemIndex = await cart.findIndex(item => item.id === id);
-    if (cartItemIndex !== -1) {
-      const cartItem = cart[cartItemIndex];
-      if (cartItem.quantity > 1) {
-        cartItem.quantity -= 1;
-      } else {
-        cart.splice(cartItemIndex, 1);
+    try {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const cartItemIndex = cart.findIndex(item => item.id === id);
+      if (cartItemIndex !== -1) {
+        const cartItem = cart[cartItemIndex];
+        if (cartItem.quantity > 1) {
+          cartItem.quantity -= 1;
+        } else {
+          cart.splice(cartItemIndex, 1); 
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        window.dispatchEvent(new Event('cartUpdated')); 
+        displayCart(); 
       }
-      localStorage.setItem('cart', JSON.stringify(cart));
-      displayCart();
+    } catch (error) {
+      console.error("Error decreasing quantity:", error);
     }
   };
 
+
   const displayCart = async () => {
     try {
-      setIsLoading(true)
+      setIsLoading(true);
       const cartItems = await JSON.parse(localStorage.getItem('cart')) || [];
-      setCartItems(cartItems)
+      const validCartItems = cartItems.filter(item => item.price !== undefined && item.quantity !== undefined);
+      setCartItems(validCartItems);
     } catch (error) {
       console.log(error, "Error");
+    } finally {
+      setIsLoading(false);
     }
-    finally {
-      setIsLoading(false)
-    }
-  }
-
+  };
   const clearCart = () => {
-    localStorage.removeItem('cart')
-    displayCart();
-  }
-  
+    try {
+      localStorage.removeItem('cart');
+      window.dispatchEvent(new Event('cartUpdated')); // Notify other components
+      displayCart(); // Update the cart state for the Cart page
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+    }
+  };
+
+
   useEffect(() => {
     displayCart();
   }, [])
@@ -129,7 +141,7 @@ function Cart() {
             </div>
             <div className="flex justify-between p-3 border-b">
               <h1 className="text-xl font-serif font-medium">Delivery Charge</h1>
-              <p className="text-xl font-sans font-bold">$ {(cartItems.reduce((total, item) => total + item.price * item.quantity, 0)/5).toFixed(2)}</p>
+              <p className="text-xl font-sans font-bold">$ {(cartItems.reduce((total, item) => total + item.price * item.quantity, 0) / 5).toFixed(2)}</p>
             </div>
 
             <div className="flex justify-between p-3">
@@ -139,7 +151,7 @@ function Cart() {
             <div className="flex justify-between p-3">
               <h1 className="text-xl font-serif font-medium">Total Amount:</h1>
               <p className="text-xl font-sans font-bold text-green-500">
-                $ {(parseFloat(cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2))+parseFloat((cartItems.reduce((total, item) => total + item.price * item.quantity, 0)/5).toFixed(2))).toFixed(2)}</p>
+                $ {(parseFloat(cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)) + parseFloat((cartItems.reduce((total, item) => total + item.price * item.quantity, 0) / 5).toFixed(2))).toFixed(2)}</p>
             </div>
             <div className="mt-4 flex justify-between items-center">
               <Link to="/address" className="bg-blue-600 border-2 text-white px-6 py-2 rounded-lg hover:bg-blue-700" >
