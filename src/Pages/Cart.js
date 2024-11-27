@@ -1,79 +1,89 @@
 
-import React, { useEffect, useState } from 'react'
-import Navbar from '../Components/Navbar'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useReducer } from 'react';
+import Navbar from '../Components/Navbar';
+import { Link } from 'react-router-dom';
+
+const cartReducer = (state, action) => {
+  switch (action.type) {
+    case 'SET_CART':
+      return { ...state, cartItems: action.payload };
+    case 'INCREASE_QUANTITY':
+      return {
+        ...state,
+        cartItems: state.cartItems.map(item =>
+          item.id === action.payload
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        ),
+      };
+    case 'DECREASE_QUANTITY':
+      return {
+        ...state,
+        cartItems: state.cartItems.map(item =>
+          item.id === action.payload && item.quantity > 1
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        ),
+      };
+    case 'CLEAR_CART':
+      return { ...state, cartItems: [] };
+    default:
+      return state;
+  }
+};
 
 function Cart() {
-  const [cartItems, setCartItems] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [state, dispatch] = useReducer(cartReducer, {
+    cartItems: []
+  });
 
-  const increaseQuantity = async (id) => {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const cartItem = cart.find(item => item.id === id);
-    if (cartItem) {
-      cartItem.quantity += 1;
-    }
-    localStorage.setItem('cart', JSON.stringify(cart));
-    window.dispatchEvent(new Event('cartUpdated')); 
-    displayCart();
-  }
-
-  const decreaseQuantity = async (id) => {
-    try {
-      const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      const cartItemIndex = cart.findIndex(item => item.id === id);
-      if (cartItemIndex !== -1) {
-        const cartItem = cart[cartItemIndex];
-        if (cartItem.quantity > 1) {
-          cartItem.quantity -= 1;
-        } else {
-          cart.splice(cartItemIndex, 1); 
-        }
-        localStorage.setItem('cart', JSON.stringify(cart));
-        window.dispatchEvent(new Event('cartUpdated')); 
-        displayCart(); 
-      }
-    } catch (error) {
-      console.error("Error decreasing quantity:", error);
-    }
+  const increaseQuantity = (id) => {
+    const updatedCart = state.cartItems.map(item =>
+      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+    );
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    dispatch({ type: 'INCREASE_QUANTITY', payload: id });
   };
 
+  const decreaseQuantity = (id) => {
+    const updatedCart = state.cartItems.map(item =>
+      item.id === id && item.quantity > 1
+        ? { ...item, quantity: item.quantity - 1 }
+        : item
+    );
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    dispatch({ type: 'DECREASE_QUANTITY', payload: id });
+  };
 
   const displayCart = async () => {
     try {
-      setIsLoading(true);
-      const cartItems = await JSON.parse(localStorage.getItem('cart')) || [];
-      const validCartItems = cartItems.filter(item => item.price !== undefined && item.quantity !== undefined);
-      setCartItems(validCartItems);
+      const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+      const validCartItems = cartItems.filter(
+        (item) => item.price !== undefined && item.quantity !== undefined
+      );
+      dispatch({ type: 'SET_CART', payload: validCartItems });
     } catch (error) {
-      console.log(error, "Error");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  const clearCart = () => {
-    try {
-      localStorage.removeItem('cart');
-      window.dispatchEvent(new Event('cartUpdated')); // Notify other components
-      displayCart(); // Update the cart state for the Cart page
-    } catch (error) {
-      console.error("Error clearing cart:", error);
+      console.error(error);
     }
   };
 
+  const clearCart = () => {
+    localStorage.removeItem('cart');
+    dispatch({ type: 'CLEAR_CART' });
+  };
 
   useEffect(() => {
     displayCart();
-  }, [])
+  }, []);
 
   return (
     <>
       <Navbar />
-      <div className='text-center text-2xl font-semibold bg-blue-500 text-white mt-2 h-10'>
+      <div className="text-center text-2xl font-semibold bg-blue-500 text-white mt-2 h-10">
         Your Cart
       </div>
 
-      {isLoading ? (
+      {state.isLoading ? (
         <div role="status" className="fixed inset-0 flex justify-center items-center">
           <svg
             aria-hidden="true"
@@ -96,8 +106,8 @@ function Cart() {
       ) : (
         <div className="flex flex-wrap justify-center p-4">
           <div className="w-full lg:w-2/3 px-4 lg:px-8 py-4">
-            {cartItems.length > 0 ? (
-              cartItems.map((cartItem) => (
+            {state.cartItems.length > 0 ? (
+              state.cartItems.map((cartItem) => (
                 <div key={cartItem.id} className="flex items-center border mb-4 p-4 rounded-lg shadow-sm">
                   <img
                     src={cartItem.image}
@@ -117,7 +127,7 @@ function Cart() {
                         <p className="px-3 py-1 text-lg font-semibold">{cartItem.quantity}</p>
                         <button
                           className="px-3 py-1 text-lg font-bold text-gray-700 hover:text-blue-500"
-                          onClick={() => increaseQuantity(cartItem.id, cartItem.price)}
+                          onClick={() => increaseQuantity(cartItem.id)}
                         >
                           +
                         </button>
@@ -137,25 +147,27 @@ function Cart() {
             </h2>
             <div className="flex justify-between p-3 border-b">
               <h1 className="text-xl font-serif font-medium">Total Items:</h1>
-              <p className="text-xl font-sans font-bold">{cartItems.reduce((sum, item) => sum + item.quantity, 0)}</p>
+              <p className="text-xl font-sans font-bold">{state.cartItems.reduce((sum, item) => sum + item.quantity, 0)}</p>
             </div>
             <div className="flex justify-between p-3 border-b">
               <h1 className="text-xl font-serif font-medium">Delivery Charge</h1>
-              <p className="text-xl font-sans font-bold">$ {(cartItems.reduce((total, item) => total + item.price * item.quantity, 0) / 5).toFixed(2)}</p>
+              <p className="text-xl font-sans font-bold">$ {(state.cartItems.reduce((total, item) => total + item.price * item.quantity, 0) / 5).toFixed(2)}</p>
             </div>
 
             <div className="flex justify-between p-3">
               <h1 className="text-xl font-serif font-medium">Total Price:</h1>
-              <p className="text-xl font-sans font-bold ">$ {cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)}</p>
+              <p className="text-xl font-sans font-bold ">$ {state.cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)}</p>
             </div>
             <div className="flex justify-between p-3">
               <h1 className="text-xl font-serif font-medium">Total Amount:</h1>
               <p className="text-xl font-sans font-bold text-green-500">
-                $ {(parseFloat(cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)) + parseFloat((cartItems.reduce((total, item) => total + item.price * item.quantity, 0) / 5).toFixed(2))).toFixed(2)}</p>
+                $ {(parseFloat(state.cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)) + parseFloat((state.cartItems.reduce((total, item) => total + item.price * item.quantity, 0) / 5).toFixed(2))).toFixed(2)}
+              </p>
             </div>
             <div className="mt-4 flex justify-between items-center">
-              <Link to="/address" className="bg-blue-600 border-2 text-white px-6 py-2 rounded-lg hover:bg-blue-700" >
-                Checkout ▶▶▶ </Link>
+              <Link to="/address" className="bg-blue-600 border-2 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                Checkout ▶▶▶
+              </Link>
               <button
                 className="bg-red-500 text-white px-4 py-2 rounded-md flex items-center hover:bg-red-600"
                 onClick={clearCart}
@@ -179,9 +191,9 @@ function Cart() {
             </div>
           </div>
         </div>
-
       )}
     </>
-  )
+  );
 }
-export default Cart
+
+export default Cart;
