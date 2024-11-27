@@ -1,80 +1,58 @@
 
-import React, { useEffect, useReducer } from 'react';
-import Navbar from '../Components/Navbar';
-import { Link } from 'react-router-dom';
-
-const cartReducer = (state, action) => {
-  switch (action.type) {
-    case 'SET_CART':
-      return { ...state, cartItems: action.payload };
-    case 'INCREASE_QUANTITY':
-      return {
-        ...state,
-        cartItems: state.cartItems.map(item =>
-          item.id === action.payload
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        ),
-      };
-    case 'DECREASE_QUANTITY':
-      return {
-        ...state,
-        cartItems: state.cartItems.map(item =>
-          item.id === action.payload && item.quantity > 1
-            ? { ...item, quantity: item.quantity - 1 }
-            : item
-        ),
-      };
-    case 'CLEAR_CART':
-      return { ...state, cartItems: [] };
-    default:
-      return state;
-  }
-};
+import React, { useEffect, useState } from 'react'
+import Navbar from '../Components/Navbar'
+import { Link } from 'react-router-dom'
 
 function Cart() {
-  const [state, dispatch] = useReducer(cartReducer, {
-    cartItems: []
-  });
+  const [cartItems, setCartItems] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
 
-  const increaseQuantity = (id) => {
-    const updatedCart = state.cartItems.map(item =>
-      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-    );
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-    dispatch({ type: 'INCREASE_QUANTITY', payload: id });
-  };
+  const increaseQuantity = async (id) => {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const cartItem = cart.find(item => item.id === id);
+    if (cartItem) {
+      cartItem.quantity += 1;
+    }
+    localStorage.setItem('cart', JSON.stringify(cart));
+    displayCart();
+  }
 
-  const decreaseQuantity = (id) => {
-    const updatedCart = state.cartItems.map(item =>
-      item.id === id && item.quantity > 1
-        ? { ...item, quantity: item.quantity - 1 }
-        : item
-    );
-    localStorage.setItem('cart', JSON.stringify(updatedCart));
-    dispatch({ type: 'DECREASE_QUANTITY', payload: id });
+  const decreaseQuantity = async (id) => {
+    const cart = await JSON.parse(localStorage.getItem('cart'));
+    const cartItemIndex = await cart.findIndex(item => item.id === id);
+    if (cartItemIndex !== -1) {
+      const cartItem = cart[cartItemIndex];
+      if (cartItem.quantity > 1) {
+        cartItem.quantity -= 1;
+      } else {
+        cart.splice(cartItemIndex, 1);
+      }
+      localStorage.setItem('cart', JSON.stringify(cart));
+      displayCart();
+    }
   };
 
   const displayCart = async () => {
     try {
-      const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
-      const validCartItems = cartItems.filter(
-        (item) => item.price !== undefined && item.quantity !== undefined
-      );
-      dispatch({ type: 'SET_CART', payload: validCartItems });
+      setIsLoading(true)
+      const cartItems = await JSON.parse(localStorage.getItem('cart')) || [];
+      setCartItems(cartItems)
     } catch (error) {
-      console.error(error);
+      console.log(error, "Error");
     }
-  };
+    finally {
+      setIsLoading(false)
+    }
+  }
 
   const clearCart = () => {
-    localStorage.removeItem('cart');
-    dispatch({ type: 'CLEAR_CART' });
-  };
-
+    localStorage.removeItem('cart')
+    displayCart();
+  }
+  
   useEffect(() => {
     displayCart();
-  }, []);
+  }, [])
 
   return (
     <>
@@ -83,7 +61,7 @@ function Cart() {
         Your Cart
       </div>
 
-      {state.isLoading ? (
+      {isLoading ? (
         <div role="status" className="fixed inset-0 flex justify-center items-center">
           <svg
             aria-hidden="true"
@@ -106,8 +84,8 @@ function Cart() {
       ) : (
         <div className="flex flex-wrap justify-center p-4">
           <div className="w-full lg:w-2/3 px-4 lg:px-8 py-4">
-            {state.cartItems.length > 0 ? (
-              state.cartItems.map((cartItem) => (
+            {cartItems.length > 0 ? (
+              cartItems.map((cartItem) => (
                 <div key={cartItem.id} className="flex items-center border mb-4 p-4 rounded-lg shadow-sm">
                   <img
                     src={cartItem.image}
@@ -147,21 +125,21 @@ function Cart() {
             </h2>
             <div className="flex justify-between p-3 border-b">
               <h1 className="text-xl font-serif font-medium">Total Items:</h1>
-              <p className="text-xl font-sans font-bold">{state.cartItems.reduce((sum, item) => sum + item.quantity, 0)}</p>
+              <p className="text-xl font-sans font-bold">{cartItems.reduce((sum, item) => sum + item.quantity, 0)}</p>
             </div>
             <div className="flex justify-between p-3 border-b">
               <h1 className="text-xl font-serif font-medium">Delivery Charge</h1>
-              <p className="text-xl font-sans font-bold">$ {(state.cartItems.reduce((total, item) => total + item.price * item.quantity, 0) / 5).toFixed(2)}</p>
+              <p className="text-xl font-sans font-bold">$ {(cartItems.reduce((total, item) => total + item.price * item.quantity, 0) / 5).toFixed(2)}</p>
             </div>
 
             <div className="flex justify-between p-3">
               <h1 className="text-xl font-serif font-medium">Total Price:</h1>
-              <p className="text-xl font-sans font-bold ">$ {state.cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)}</p>
+              <p className="text-xl font-sans font-bold ">$ {cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)}</p>
             </div>
             <div className="flex justify-between p-3">
               <h1 className="text-xl font-serif font-medium">Total Amount:</h1>
               <p className="text-xl font-sans font-bold text-green-500">
-                $ {(parseFloat(state.cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)) + parseFloat((state.cartItems.reduce((total, item) => total + item.price * item.quantity, 0) / 5).toFixed(2))).toFixed(2)}
+                $ {(parseFloat(cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)) + parseFloat((cartItems.reduce((total, item) => total + item.price * item.quantity, 0) / 5).toFixed(2))).toFixed(2)}
               </p>
             </div>
             <div className="mt-4 flex justify-between items-center">
