@@ -27,8 +27,8 @@ function Electronics() {
   return (
     <>
       <Navbar />
-      <div className='md:h-24 lg:h-20 mt-2 justify-center items-center bg-headlineColor text-2xl py-4 font-sans'>
-        <h1 className='text-white font-semibold text-center px-2'>
+      <div className='md:h-24 lg:h-20 mt-2 justify-center items-center bg-headlineColor text-xl py-4 font-sans'>
+        <h1 className='text-white font-semibold text-center mx-2'>
           Electronics Items Available in the Store
         </h1>
       </div>
