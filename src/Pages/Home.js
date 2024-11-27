@@ -24,6 +24,10 @@ function Home() {
     }
   };
 
+  const handleReset = () => {
+    fetchProducts();
+  }
+
   const fetchProducts = async () => {
     setIsLoading(true);
     try {
@@ -69,35 +73,81 @@ function Home() {
   return (
     <>
       <Navbar />
-      <div className="w-full relative flex flex-wrap justify-between  items-center my-4 h-auto gap-4">
+      <div className=" w-full relative flex flex-wrap justify-between items-center my-4 h-auto gap-4">
         <input
-          className="input h-10 text-black sm:w-full md:2/3 ms-10 xl:w-1/3  justify-center  border-2 rounded-xl px-2"
+          className="input h-10 text-black w-full ms-4 sm:w-full lg:w-1/3 border-2 rounded-xl px-2"
           onChange={handleSearch}
           type="text"
           placeholder="Search Here..."
         />
-        <div className="grid grid-cols-2 justify-center gap-4 mx-10">
+        <div className="flex flex-col me-4 sm:flex-row justify-center gap-4 w-full sm:w-auto px-4 sm:px-0">
           <button
-            className="border-2 rounded-xl px-4 py-2 hover:bg-slate-300 shadow-xl"
+            className="border-2 rounded-xl px-4 py-2 focus:bg-blue-500 focus:text-white hover:bg-slate-300 shadow-xl"
             onClick={() => applySorting('lowToHigh')}
           >
-            Price : Low to High
+            Price: Low to High
           </button>
           <button
-            className="border-2 rounded-xl px-4 py-2 hover:bg-slate-300 shadow-xl"
+            className="border-2 rounded-xl px-4 py-2 focus:bg-blue-500 focus:text-white hover:bg-slate-300 shadow-xl"
             onClick={() => applySorting('highToLow')}
           >
-            Price : High to Low
+            Price: High to Low
           </button>
         </div>
-        <div className='grid mx-4 lg:grid-cols-4 gap-4 sm:grid-cols-2'>
-          <img onClick={()=>setCatName('electronics')}  className='h-60 rounded-2xl shadow-xl  cursor-pointer w-100' 
-          src='./Electronics.jpeg' alt='Electronics' />
-          <img onClick={()=>setCatName('jewelery')} className='rounded-2xl shadow-xl h-60 cursor-pointer w-100' src="https://cdn0.weddingwire.in/vendor/9497/3_2/960/png/bridal-jewellery-suvarnakala-jewellers-necklace-earrings-2_15_319497-159369268555056.jpeg" alt='jewelery' />
-          <img onClick={()=>setCatName("men's clothing")} className='rounded-2xl shadow-xl h-60 w-100 cursor-pointer' src='https://media.istockphoto.com/id/1293366109/photo/this-one-match-perfect-with-me.jpg?s=612x612&w=0&k=20&c=wJ6yYbRrDfdmoViuQkX39s2z_0lCiNQYgEtLU--0EbY=' alt="Men's Clothes" />
-          <img onClick={()=>setCatName("women's clothing")} className='rounded-2xl shadow-xl h-60 w-80 cursor-pointer' src="./Women's Clothings.jpeg" alt="Women's Clothes" />
+      </div>
+
+      <div className="flex bg-blue-600 items-center text-xl font-sans text-white mt-4 justify-center h-12 text-center">
+        <p className="text-2xl py-2 font-semibold">Filter Items By Categories</p>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mx-4 mt-4">
+        <div>
+          <img
+            onClick={handleReset}
+            className="h-40 rounded-2xl shadow-xl cursor-pointer w-full object-cover"
+            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJJc2wKGJ-UtZsPuXn8RJVs_a31eZV2gEGbg&s"
+            alt="All Products"
+          />
+          <p className="flex justify-center font-semibold text-lg font-serif">All Products</p>
+        </div>
+        <div>
+          <img
+            onClick={() => setCatName('electronics')}
+            className="h-40 rounded-2xl shadow-xl cursor-pointer w-full object-cover"
+            src="./Electronics.jpeg"
+            alt="Electronics"
+          />
+          <p className="flex justify-center font-semibold text-lg font-serif">Electronics</p>
+        </div>
+        <div>
+          <img
+            onClick={() => setCatName('jewelery')}
+            className="h-40 rounded-2xl shadow-xl cursor-pointer w-full object-cover"
+            src="https://cdn0.weddingwire.in/vendor/9497/3_2/960/png/bridal-jewellery-suvarnakala-jewellers-necklace-earrings-2_15_319497-159369268555056.jpeg"
+            alt="Jewellery"
+          />
+          <p className="flex justify-center font-semibold text-lg font-serif">Jewellery</p>
+        </div>
+        <div>
+          <img
+            onClick={() => setCatName("men's clothing")}
+            className="h-40 rounded-2xl shadow-xl cursor-pointer w-full object-cover"
+            src="https://media.istockphoto.com/id/1293366109/photo/this-one-match-perfect-with-me.jpg?s=612x612&w=0&k=20&c=wJ6yYbRrDfdmoViuQkX39s2z_0lCiNQYgEtLU--0EbY="
+            alt="Men's Clothes"
+          />
+          <p className="flex justify-center font-semibold text-lg font-serif">Men's Clothing</p>
+        </div>
+        <div>
+          <img
+            onClick={() => setCatName("women's clothing")}
+            className="h-40 rounded-2xl shadow-xl cursor-pointer w-full object-cover"
+            src="./Women's Clothings.jpeg"
+            alt="Women's Clothes"
+          />
+          <p className="flex justify-center font-semibold text-lg font-serif">Women's Clothing</p>
         </div>
       </div>
+
       <div className='text-white bg-blue-600 mt-4 justify-center text-center h-20 items-center py-2 font-sans'>
         <p className='text-3xl font-bold'>
           Welcome to our store
@@ -110,7 +160,7 @@ function Home() {
 
       <div className='mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 sm:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5  gap-4 p-4'>
         {isLoading ?
-          <div role="status" className="fixed inset-0 flex justify-center items-center">
+          <div role="status" className="fixed inset-0  flex justify-center items-center">
             <svg
               aria-hidden="true"
               className="w-28 h-28 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
@@ -133,13 +183,15 @@ function Home() {
           <>
             {filteredProducts.map((product) => (
               <div key={product.id} className='bg-white p-4 rounded-3xl border-2 shadow-xl'>
-                <img src={product.image} alt={product.title} className='rounded-xl p-4 border-gray-300 2xl: h-80 w-full cursor-pointer border-2 mb-4' />
-                <h2 className='text-lg cursor-pointer  line-clamp-1 font-semibold'>{product.title}...</h2>
-                <p className='text-gray-700 text-sm line-clamp-2'>{product.description}...</p>
-                <p className='mt-2 text-lg font-bold text-blue-400 justify-between flex'>
+                <div className='justify-center flex items-center'>
+                  <img src={product.image} alt={product.title} className='rounded-xl p-4 border-gray-300 2xl: h-60 w-60  cursor-pointer border-2 mb-4' />
+                </div>
+                <h2 className='text-[16px] cursor-pointer  line-clamp-1 font-semibold'>{product.title}...</h2>
+                <p className='text-gray-700 text-[12px] line-clamp-2'>{product.description}...</p>
+                <p className='mt-2 text-[16px] font-bold text-blue-400 justify-between flex'>
                   ${product.price}
                   <button onClick={() => addToCart(product.id, product.image, product.title, product.price)}
-                    className='font-mono border-2 text-white font-medium bg-blue-400 hover:bg-opacity-40 rounded-lg hover:text-white px-2 p-1 h-10'>
+                    className='font-mono border-2 text-white font-medium bg-blue-400 hover:bg-opacity-40 rounded-lg hover:text-white items-center px-2  h-8'>
                     Add to Cart
                   </button>
                 </p>

@@ -13,7 +13,7 @@ export default function Login() {
         password: Yup.string().required("Required")
     });
 
-    const handleLogin = async (values, { resetForm },onSubmitProps) => {
+    const handleLogin = async (values, { resetForm }, onSubmitProps) => {
         try {
             setIsLoading(true)
             const response = await fetch("https://dummyjson.com/auth/login", {
@@ -28,12 +28,12 @@ export default function Login() {
             });
 
             const data = await response.json();
-           
+
             if (data.accessToken) {
                 localStorage.setItem("accessToken", data.accessToken);
                 resetForm();
                 navigate("/");
-            } 
+            }
         } catch (error) {
             console.error("Error:", error);
         } finally {
