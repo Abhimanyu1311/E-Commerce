@@ -57,7 +57,7 @@ function Cart() {
   return (
     <>
       <Navbar />
-      <div className='text-center text-2xl font-semibold bg-blue-500 text-white mt-2 h-10'>
+      <div className="text-center text-2xl font-semibold bg-blue-500 text-white mt-2 h-10">
         Your Cart
       </div>
 
@@ -105,7 +105,7 @@ function Cart() {
                         <p className="px-3 py-1 text-lg font-semibold">{cartItem.quantity}</p>
                         <button
                           className="px-3 py-1 text-lg font-bold text-gray-700 hover:text-blue-500"
-                          onClick={() => increaseQuantity(cartItem.id, cartItem.price)}
+                          onClick={() => increaseQuantity(cartItem.id)}
                         >
                           +
                         </button>
@@ -129,7 +129,7 @@ function Cart() {
             </div>
             <div className="flex justify-between p-3 border-b">
               <h1 className="text-xl font-serif font-medium">Delivery Charge</h1>
-              <p className="text-xl font-sans font-bold">$ {(cartItems.reduce((total, item) => total + item.price * item.quantity, 0)/5).toFixed(2)}</p>
+              <p className="text-xl font-sans font-bold">$ {(cartItems.reduce((total, item) => total + item.price * item.quantity, 0) / 5).toFixed(2)}</p>
             </div>
 
             <div className="flex justify-between p-3">
@@ -139,11 +139,13 @@ function Cart() {
             <div className="flex justify-between p-3">
               <h1 className="text-xl font-serif font-medium">Total Amount:</h1>
               <p className="text-xl font-sans font-bold text-green-500">
-                $ {(parseFloat(cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2))+parseFloat((cartItems.reduce((total, item) => total + item.price * item.quantity, 0)/5).toFixed(2))).toFixed(2)}</p>
+                $ {(parseFloat(cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2)) + parseFloat((cartItems.reduce((total, item) => total + item.price * item.quantity, 0) / 5).toFixed(2))).toFixed(2)}
+              </p>
             </div>
             <div className="mt-4 flex justify-between items-center">
-              <Link to="/address" className="bg-blue-600 border-2 text-white px-6 py-2 rounded-lg hover:bg-blue-700" >
-                Checkout ▶▶▶ </Link>
+              <Link to="/address" className="bg-blue-600 border-2 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                Checkout ▶▶▶
+              </Link>
               <button
                 className="bg-red-500 text-white px-4 py-2 rounded-md flex items-center hover:bg-red-600"
                 onClick={clearCart}
@@ -167,9 +169,9 @@ function Cart() {
             </div>
           </div>
         </div>
-
       )}
     </>
-  )
+  );
 }
-export default Cart
+
+export default Cart;
