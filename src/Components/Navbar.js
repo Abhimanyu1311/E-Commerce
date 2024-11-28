@@ -11,9 +11,10 @@ function Navbar() {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
-    const handleTotal = () => {
+    const handleTotal = (id) => {
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
-        setCartItems(cart);
+        const cartItems = cart.find((item)=>item.id===id) 
+        setCartItems(cartItems);
     };
     const totalAmount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 

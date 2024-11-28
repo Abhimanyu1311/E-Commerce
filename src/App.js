@@ -1,9 +1,6 @@
-
 import './App.css';
 import Rout from './Routes/Rout';
-
 function App() {
-
   return (
     <Rout />
   );

@@ -31,6 +31,8 @@ export default function Login() {
 
             if (data.accessToken) {
                 localStorage.setItem("accessToken", data.accessToken);
+                localStorage.setItem('username',values.username)
+                localStorage.setItem('password',values.password)
                 resetForm();
                 navigate("/");
             }
